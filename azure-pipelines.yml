@@ -11,6 +11,7 @@ resources:
 variables:
   imageRepository: sampleapp
   tag: '$(Build.BuildId)'
+  imagePullSecret: 'coforgeregistry-auth'
 
 stages:
 - stage: Build
@@ -50,6 +51,15 @@ stages:
         buildType: 'current'
         artifactName: 'menifests'
         targetPath: '$(Pipeline.Workspace)/menifests'
+    - task: KubernetesManifest@1
+      inputs:
+        action: 'createSecret'
+        connectionType: 'kubernetesServiceConnection'
+        kubernetesServiceConnection: 'nik-aks-spring'
+        namespace: 'spring'
+        secretType: 'dockerRegistry'
+        secretName: '$(imagePullSecret)'
+        dockerRegistryEndpoint: 'coforgeregistry'
     - task: KubernetesManifest@1
       inputs:
         action: 'deploy'
