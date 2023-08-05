@@ -69,3 +69,7 @@ stages:
         manifests: |
           $(Pipeline.Workspace)/menifests/deployment.yml
           $(Pipeline.Workspace)/menifests/service.yml
+        imagePullSecrets: |
+          $(imagePullSecret)
+        containers: |
+          $(containerRegistry)/$(imageRepository):$(tag)
